@@ -34,6 +34,7 @@
  *   - .note       for informative notes             (div, p, span, aside, details)
  *   - .example    for informative examples          (div, p, pre, span)
  *   - .issue      for issues                        (div, p, span)
+ *   - .assertion  for assertions                    (div, p, span)
  *   - .advisement for loud normative statements     (div, p, strong)
  *   - .annoying-warning for spec obsoletion notices (div, aside, details)
  *
@@ -48,9 +49,9 @@
  *   - ::before styled for CSS-generated issue/example/figure numbers:
  *     -> Documents wishing to use this only need to add
  *        figcaption::before,
- *        .caption::before { content: "Figure "  counter(figure);  }
- *        .example::before { content: "Example " counter(example); }
- *        .issue::before   { content: "Issue "   counter(issue);   }
+ *        .caption::before { content: "Figure "  counter(figure) " ";  }
+ *        .example::before { content: "Example " counter(example) " "; }
+ *        .issue::before   { content: "Issue "   counter(issue) " ";   }
  *
  * Header Stuff (ignore, just don't conflict with these classes)
  *   - .head for the header
@@ -413,6 +414,19 @@
 	 border-left: 0.5em solid #DEF;
 	}
 
+	/* Put nice boxes around each algorithm. */
+	[data-algorithm]:not(.heading) {
+	  padding: .5em;
+	  border: thin solid #ddd; border-radius: .5em;
+	  margin: .5em calc(-0.5em - 1px);
+	}
+	[data-algorithm]:not(.heading) > :first-child {
+	  margin-top: 0;
+	}
+	[data-algorithm]:not(.heading) > :last-child {
+	  margin-bottom: 0;
+	}
+
 	/* Style for switch/case <dl>s */
 	dl.switch > dd > ol.only,
 	dl.switch > dd > .only > ol {
@@ -456,7 +470,7 @@
 		font-style: normal;
 	}
 	dt dfn code, code.idl {
-		font-size: inherit;
+		font-size: medium;
 	}
 	dfn var {
 		font-style: normal;
@@ -597,7 +611,7 @@
 /*                             Colored Boxes                                  */
 /******************************************************************************/
 
-	.issue, .note, .example, .advisement, blockquote {
+	.issue, .note, .example, .assertion, .advisement, blockquote {
 		padding: .5em;
 		border: .5em;
 		border-left-style: solid;
@@ -612,6 +626,7 @@
 	.note,
 	.example,
 	.advisement,
+	.assertion,
 	blockquote {
 		margin: 1em auto;
 	}
@@ -644,7 +659,7 @@
 		padding-right: 1em;
 		text-transform: uppercase;
 	}
-	/* Add .issue::before { content: "Issue " counter(issue); } for autogen numbers,
+	/* Add .issue::before { content: "Issue " counter(issue) " "; } for autogen numbers,
 	   or use class="marker" to mark up the issue number in source. */
 
 /** Example *******************************************************************/
@@ -662,7 +677,7 @@
 		min-width: 7.5em;
 		display: block;
 	}
-	/* Add .example::before { content: "Example " counter(example); } for autogen numbers,
+	/* Add .example::before { content: "Example " counter(example) " "; } for autogen numbers,
 	   or use class="marker" to mark up the example number in source. */
 
 /** Non-normative Note ********************************************************/
@@ -689,6 +704,14 @@
 	}
 	details.note[open] > summary {
 		border-bottom: 1px silver solid;
+	}
+
+/** Assertion Box *************************************************************/
+	/*  for assertions in algorithms */
+
+	.assertion {
+		border-color: #AAA;
+		background: #EEE;
 	}
 
 /** Advisement Box ************************************************************/
@@ -945,6 +968,8 @@ Possible extra rowspan handling
 		/* Reverse color scheme */
 		color: black;
 		border-color: #3980B5;
+		border-bottom-width: 3px !important;
+		margin-bottom: 0px !important;
 	}
 	.toc a:visited {
 		border-color: #054572;
@@ -1151,154 +1176,155 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed 1.0.0" name="generator">
+  <meta content="Bikeshed version a8e0e59b98ece73484bb5e13aed3b57d4049a131" name="generator">
+  <link href="https://tabatkins.github.io/specs/css-when-else/" rel="canonical">
 <style>/* style-md-lists */
 
-            /* This is a weird hack for me not yet following the commonmark spec
-               regarding paragraph and lists. */
-            [data-md] > :first-child {
-                margin-top: 0;
-            }
-            [data-md] > :last-child {
-                margin-bottom: 0;
-            }</style>
+/* This is a weird hack for me not yet following the commonmark spec
+   regarding paragraph and lists. */
+[data-md] > :first-child {
+    margin-top: 0;
+}
+[data-md] > :last-child {
+    margin-bottom: 0;
+}</style>
 <style>/* style-selflinks */
 
-            .heading, .issue, .note, .example, li, dt {
-                position: relative;
-            }
-            a.self-link {
-                position: absolute;
-                top: 0;
-                left: calc(-1 * (3.5rem - 26px));
-                width: calc(3.5rem - 26px);
-                height: 2em;
-                text-align: center;
-                border: none;
-                transition: opacity .2s;
-                opacity: .5;
-            }
-            a.self-link:hover {
-                opacity: 1;
-            }
-            .heading > a.self-link {
-                font-size: 83%;
-            }
-            li > a.self-link {
-                left: calc(-1 * (3.5rem - 26px) - 2em);
-            }
-            dfn > a.self-link {
-                top: auto;
-                left: auto;
-                opacity: 0;
-                width: 1.5em;
-                height: 1.5em;
-                background: gray;
-                color: white;
-                font-style: normal;
-                transition: opacity .2s, background-color .2s, color .2s;
-            }
-            dfn:hover > a.self-link {
-                opacity: 1;
-            }
-            dfn > a.self-link:hover {
-                color: black;
-            }
+.heading, .issue, .note, .example, li, dt {
+    position: relative;
+}
+a.self-link {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * (3.5rem - 26px));
+    width: calc(3.5rem - 26px);
+    height: 2em;
+    text-align: center;
+    border: none;
+    transition: opacity .2s;
+    opacity: .5;
+}
+a.self-link:hover {
+    opacity: 1;
+}
+.heading > a.self-link {
+    font-size: 83%;
+}
+li > a.self-link {
+    left: calc(-1 * (3.5rem - 26px) - 2em);
+}
+dfn > a.self-link {
+    top: auto;
+    left: auto;
+    opacity: 0;
+    width: 1.5em;
+    height: 1.5em;
+    background: gray;
+    color: white;
+    font-style: normal;
+    transition: opacity .2s, background-color .2s, color .2s;
+}
+dfn:hover > a.self-link {
+    opacity: 1;
+}
+dfn > a.self-link:hover {
+    color: black;
+}
 
-            a.self-link::before            { content: "¶"; }
-            .heading > a.self-link::before { content: "§"; }
-            dfn > a.self-link::before      { content: "#"; }</style>
+a.self-link::before            { content: "¶"; }
+.heading > a.self-link::before { content: "§"; }
+dfn > a.self-link::before      { content: "#"; }</style>
 <style>/* style-counters */
 
-            body {
-                counter-reset: example figure issue;
-            }
-            .issue {
-                counter-increment: issue;
-            }
-            .issue:not(.no-marker)::before {
-                content: "Issue " counter(issue);
-            }
+body {
+    counter-reset: example figure issue;
+}
+.issue {
+    counter-increment: issue;
+}
+.issue:not(.no-marker)::before {
+    content: "Issue " counter(issue);
+}
 
-            .example {
-                counter-increment: example;
-            }
-            .example:not(.no-marker)::before {
-                content: "Example " counter(example);
-            }
-            .invalid.example:not(.no-marker)::before,
-            .illegal.example:not(.no-marker)::before {
-                content: "Invalid Example" counter(example);
-            }
+.example {
+    counter-increment: example;
+}
+.example:not(.no-marker)::before {
+    content: "Example " counter(example);
+}
+.invalid.example:not(.no-marker)::before,
+.illegal.example:not(.no-marker)::before {
+    content: "Invalid Example" counter(example);
+}
 
-            figure {
-                counter-increment: figure;
-            }
-            figcaption:not(.no-marker)::before {
-                content: "Figure " counter(figure);
-            }</style>
+figcaption {
+    counter-increment: figure;
+}
+figcaption:not(.no-marker)::before {
+    content: "Figure " counter(figure) " ";
+}</style>
 <style>/* style-autolinks */
 
-            .css.css, .property.property, .descriptor.descriptor {
-                color: #005a9c;
-                font-size: inherit;
-                font-family: inherit;
-            }
-            .css::before, .property::before, .descriptor::before {
-                content: "‘";
-            }
-            .css::after, .property::after, .descriptor::after {
-                content: "’";
-            }
-            .property, .descriptor {
-                /* Don't wrap property and descriptor names */
-                white-space: nowrap;
-            }
-            .type { /* CSS value <type> */
-                font-style: italic;
-            }
-            pre .property::before, pre .property::after {
-                content: "";
-            }
-            [data-link-type="property"]::before,
-            [data-link-type="propdesc"]::before,
-            [data-link-type="descriptor"]::before,
-            [data-link-type="value"]::before,
-            [data-link-type="function"]::before,
-            [data-link-type="at-rule"]::before,
-            [data-link-type="selector"]::before,
-            [data-link-type="maybe"]::before {
-                content: "‘";
-            }
-            [data-link-type="property"]::after,
-            [data-link-type="propdesc"]::after,
-            [data-link-type="descriptor"]::after,
-            [data-link-type="value"]::after,
-            [data-link-type="function"]::after,
-            [data-link-type="at-rule"]::after,
-            [data-link-type="selector"]::after,
-            [data-link-type="maybe"]::after {
-                content: "’";
-            }
+.css.css, .property.property, .descriptor.descriptor {
+    color: #005a9c;
+    font-size: inherit;
+    font-family: inherit;
+}
+.css::before, .property::before, .descriptor::before {
+    content: "‘";
+}
+.css::after, .property::after, .descriptor::after {
+    content: "’";
+}
+.property, .descriptor {
+    /* Don't wrap property and descriptor names */
+    white-space: nowrap;
+}
+.type { /* CSS value <type> */
+    font-style: italic;
+}
+pre .property::before, pre .property::after {
+    content: "";
+}
+[data-link-type="property"]::before,
+[data-link-type="propdesc"]::before,
+[data-link-type="descriptor"]::before,
+[data-link-type="value"]::before,
+[data-link-type="function"]::before,
+[data-link-type="at-rule"]::before,
+[data-link-type="selector"]::before,
+[data-link-type="maybe"]::before {
+    content: "‘";
+}
+[data-link-type="property"]::after,
+[data-link-type="propdesc"]::after,
+[data-link-type="descriptor"]::after,
+[data-link-type="value"]::after,
+[data-link-type="function"]::after,
+[data-link-type="at-rule"]::after,
+[data-link-type="selector"]::after,
+[data-link-type="maybe"]::after {
+    content: "’";
+}
 
-            [data-link-type].production::before,
-            [data-link-type].production::after,
-            .prod [data-link-type]::before,
-            .prod [data-link-type]::after {
-                content: "";
-            }
+[data-link-type].production::before,
+[data-link-type].production::after,
+.prod [data-link-type]::before,
+.prod [data-link-type]::after {
+    content: "";
+}
 
-            [data-link-type=element],
-            [data-link-type=element-attr] {
-                font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
-                font-size: .9em;
-            }
-            [data-link-type=element]::before { content: "<" }
-            [data-link-type=element]::after  { content: ">" }
+[data-link-type=element],
+[data-link-type=element-attr] {
+    font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: .9em;
+}
+[data-link-type=element]::before { content: "<" }
+[data-link-type=element]::after  { content: ">" }
 
-            [data-link-type=biblio] {
-                white-space: pre;
-            }</style>
+[data-link-type=biblio] {
+    white-space: pre;
+}</style>
 <style>/* style-dfn-panel */
 
         .dfn-panel {
@@ -1337,8 +1363,10 @@ Possible extra rowspan handling
         .dfn-paneled { cursor: pointer; }
         </style>
 <style>/* style-syntax-highlighting */
-.highlight .hll { background-color: #ffffcc }
-.highlight  { background: #ffffff; }
+
+.highlight:not(.idl) { background: hsl(24, 20%, 95%); }
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
 .highlight .c { color: #708090 } /* Comment */
 .highlight .k { color: #990055 } /* Keyword */
 .highlight .l { color: #000000 } /* Literal */
@@ -1369,7 +1397,7 @@ Possible extra rowspan handling
 .highlight .nn { color: #0077aa } /* Name.Namespace */
 .highlight .py { color: #0077aa } /* Name.Property */
 .highlight .nt { color: #669900 } /* Name.Tag */
-.highlight .nv { color: #0077aa } /* Name.Variable */
+.highlight .nv { color: #222222 } /* Name.Variable */
 .highlight .ow { color: #999999 } /* Operator.Word */
 .highlight .mb { color: #000000 } /* Literal.Number.Bin */
 .highlight .mf { color: #000000 } /* Literal.Number.Float */
@@ -1391,21 +1419,17 @@ Possible extra rowspan handling
 .highlight .vg { color: #0077aa } /* Name.Variable.Global */
 .highlight .vi { color: #0077aa } /* Name.Variable.Instance */
 .highlight .il { color: #000000 } /* Literal.Number.Integer.Long */
-        .highlight { background: hsl(24, 20%, 95%); }
-        code.highlight { padding: .1em; border-radius: .3em; }
-        xmp.highlight, pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
-        </style>
+</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">CSS When/Else Rules</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2016-05-27">27 May 2016</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2017-09-15">15 September 2017</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
      <dd><a class="u-url" href="https://tabatkins.github.io/specs/css-when-else/">https://tabatkins.github.io/specs/css-when-else/</a>
      <dt>Issue Tracking:
-     <dd><a href="https://github.com/tabatkins/specs/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editor:
      <dd class="editor p-author h-card vcard"><span class="p-name fn">Tab Atkins-Bittner</span>
@@ -1414,14 +1438,14 @@ Possible extra rowspan handling
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 27 May 2016,
+In addition, as of 15 September 2017,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
    <hr title="Separator for header">
   </div>
-  <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
   <div class="p-summary" data-fill-with="abstract">
+   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>A proposal to extend the concept of CSS conditional rules to arbitrary when/else chains, and supporing this, a proposal to unify the disparate conditional rules into a single grammar.</p>
   </div>
   <div data-fill-with="at-risk"></div>
@@ -1455,10 +1479,10 @@ and Thing C otherwise.
 This requires carefully crafting your conditional rules to exclude anything matching the other rules,
 while also making sure you’re not accidentally over-excluding things and leaving some situations unmatched.</p>
    <p>This spec proposes two things to fix this problem.
-First, it proposes an <a class="css" data-link-type="maybe" href="#at-ruledef-when" id="ref-for-at-ruledef-when-1">@when</a> rule,
+First, it proposes an <span class="css">@when</span> rule,
 which generalizes the concept of a conditional rule.
 Anything you can express in an existing conditional rule
-can be expressed in <a class="css" data-link-type="maybe" href="#at-ruledef-when" id="ref-for-at-ruledef-when-2">@when</a>,
+can be expressed in <span class="css">@when</span>,
 it just has to be wrapped in an appropriate function
 to declare what kind of condition it is.
 This allow authors to easily combine multiple types of queries,
@@ -1469,31 +1493,31 @@ authors must rely on nesting separate conditional rules,
 which is harder to read and write,
 presupposes the conditions are to be conjoined with the "and" boolean relation
 (with no easy way to indicate anything else),
-and restricts their utility in the proposed <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-1">conditional rule chains</a>.</p>
-   <p>Second, it proposes the introduction of <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-1">@else</a> rules,
+and restricts their utility in the proposed <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain">conditional rule chains</a>.</p>
+   <p>Second, it proposes the introduction of <span class="css">@else</span> rules,
 which follow conditional rules
 and automatically qualify their conditions as you’d expect,
-such that at most one rule in an <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-2">conditional rule chain</a> is chosen as active.</p>
-   <h2 class="heading settled" data-level="2" id="when-rule"><span class="secno">2. </span><span class="content">Generalized Conditional Rules: the <a class="css" data-link-type="maybe" href="#at-ruledef-when" id="ref-for-at-ruledef-when-3">@when</a> rule</span><a class="self-link" href="#when-rule"></a></h2>
-   <p>The <dfn class="dfn-paneled css" data-dfn-type="at-rule" data-export="" id="at-ruledef-when">@when</dfn> at-rule is a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rule</a> that generalizes the individual <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a> such as <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-media">@media</a> and <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-supports">@supports</a>.
+such that at most one rule in an <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain①">conditional rule chain</a> is chosen as active.</p>
+   <h2 class="heading settled" data-level="2" id="when-rule"><span class="secno">2. </span><span class="content">Generalized Conditional Rules: the <span class="css">@when</span> rule</span><a class="self-link" href="#when-rule"></a></h2>
+   <p>The <dfn data-dfn-type="dfn" data-noexport="" id="when">@when<a class="self-link" href="#when"></a></dfn> at-rule is a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rule" id="ref-for-conditional-group-rule">conditional group rule</a> that generalizes the individual <a data-link-type="dfn" href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules" id="ref-for-conditional-group-rules">conditional group rules</a> such as <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-media" id="ref-for-at-ruledef-media">@media</a> and <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-supports" id="ref-for-at-ruledef-supports">@supports</a>.
 It is defined as:</p>
 <pre class="prod">@when <a class="production" data-link-type="type">&lt;boolean-condition></a> {
-  <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-syntax-3/#typedef-stylesheet">&lt;stylesheet></a>
+  <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-syntax-3/#typedef-stylesheet" id="ref-for-typedef-stylesheet">&lt;stylesheet></a>
 }
 </pre>
    <p>Where <a class="production css" data-link-type="type">&lt;boolean-condition></a> is a boolean algebra a la <a href="https://www.w3.org/TR/mediaqueries-4/#mq-syntax">Media Queries 4 §3 Syntax</a>,
-but with <a class="css" data-link-type="maybe" href="#funcdef-media" id="ref-for-funcdef-media-1">media()</a> and <a class="css" data-link-type="maybe" href="#funcdef-supports" id="ref-for-funcdef-supports-1">supports()</a> functions as leaves.</p>
+but with <span class="css">media()</span> and <span class="css">supports()</span> functions as leaves.</p>
    <p class="issue" id="issue-84e8178b"><a class="self-link" href="#issue-84e8178b"></a> Define "boolean algebra, with X as leaves" in a generic way in Conditional,
 so all the conditional rules can reference it directly,
 rather than having to redefine boolean algebra on their own.</p>
-   <p>The <a class="css" data-link-type="maybe" href="#funcdef-media" id="ref-for-funcdef-media-2">media()</a> and <a class="css" data-link-type="maybe" href="#funcdef-supports" id="ref-for-funcdef-supports-2">supports()</a> functions are defined as:</p>
-<pre class="prod"><dfn class="dfn-paneled" data-dfn-type="function" data-export="" id="funcdef-media">media()</dfn> = media( [ <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-plain">&lt;mf-plain></a> <a data-link-type="grammar" href="https://drafts.csswg.org/css-values-3/#comb-one">|</a> <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-boolean">&lt;mf-boolean></a> <a data-link-type="grammar" href="https://drafts.csswg.org/css-values-3/#comb-one">|</a> <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-range">&lt;mf-range></a> ] )
-<dfn class="dfn-paneled" data-dfn-type="function" data-export="" id="funcdef-supports">supports()</dfn> = supports( <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-cascade-4/#typedef-declaration">&lt;declaration></a> )
+   <p>The <span class="css">media()</span> and <span class="css">supports()</span> functions are defined as:</p>
+<pre class="prod"><dfn data-dfn-type="dfn" data-noexport="" id="media">media()<a class="self-link" href="#media"></a></dfn> = media( [ <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-plain" id="ref-for-typedef-mf-plain">&lt;mf-plain></a> <a data-link-type="grammar" href="https://drafts.csswg.org/css-values-4/#comb-one" id="ref-for-comb-one">|</a> <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-boolean" id="ref-for-typedef-mf-boolean">&lt;mf-boolean></a> <a data-link-type="grammar" href="https://drafts.csswg.org/css-values-4/#comb-one" id="ref-for-comb-one①">|</a> <a class="production" data-link-type="type" href="https://drafts.csswg.org/mediaqueries-4/#typedef-mf-range" id="ref-for-typedef-mf-range">&lt;mf-range></a> ] )
+<dfn data-dfn-type="dfn" data-noexport="" id="supports">supports()<a class="self-link" href="#supports"></a></dfn> = supports( <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-cascade-4/#typedef-declaration" id="ref-for-typedef-declaration">&lt;declaration></a> )
 </pre>
-   <p>A <a class="css" data-link-type="maybe" href="#funcdef-media" id="ref-for-funcdef-media-3">media()</a> or <a class="css" data-link-type="maybe" href="#funcdef-supports" id="ref-for-funcdef-supports-3">supports()</a> function is associated the boolean result
+   <p>A <span class="css">media()</span> or <span class="css">supports()</span> function is associated the boolean result
 that its contained condition is associated with.</p>
-   <h2 class="heading settled" data-level="3" id="else-rule"><span class="secno">3. </span><span class="content">Chained Conditionals: the <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-2">@else</a> rule</span><a class="self-link" href="#else-rule"></a></h2>
-   <p>Usually, <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a> are independent;
+   <h2 class="heading settled" data-level="3" id="else-rule"><span class="secno">3. </span><span class="content">Chained Conditionals: the <span class="css">@else</span> rule</span><a class="self-link" href="#else-rule"></a></h2>
+   <p>Usually, <a data-link-type="dfn" href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules" id="ref-for-conditional-group-rules①">conditional group rules</a> are independent;
 each one has a separate condition,
 evaluated without direct reference to any other rule,
 and decides whether or not to apply their contained rules
@@ -1502,48 +1526,49 @@ based solely on their condition.</p>
 but makes it difficult to write a collection of conditionals that are meant to be mutually exclusive;
 authors have to very carefully craft their conditions to not activate when the other rules are meant to,
 and make sure the collection of conditionals don’t accidentally <em>all</em> exclude some situation.</p>
-   <p>The <dfn class="dfn-paneled css" data-dfn-type="at-rule" data-export="" id="at-ruledef-else">@else</dfn> rule is a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rule</a> used to form <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-3">conditional rule chains</a>,
+   <p>The <dfn data-dfn-type="dfn" data-noexport="" id="else">@else<a class="self-link" href="#else"></a></dfn> rule is a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rule" id="ref-for-conditional-group-rule①">conditional group rule</a> used to form <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain②">conditional rule chains</a>,
 which allow multiple conditional rules to be provided
 and guarantee that at most one of them will evaluate their condition as true.
 It is defined as:</p>
-<pre class="prod">@else <a class="production" data-link-type="type">&lt;boolean-condition></a><a data-link-type="grammar" href="https://drafts.csswg.org/css-values-3/#mult-opt">?</a> {
-  <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-syntax-3/#typedef-stylesheet">&lt;stylesheet></a>
+<pre class="prod">@else <a class="production" data-link-type="type">&lt;boolean-condition></a><a data-link-type="grammar" href="https://drafts.csswg.org/css-values-4/#mult-opt" id="ref-for-mult-opt">?</a> {
+  <a class="production" data-link-type="type" href="https://drafts.csswg.org/css-syntax-3/#typedef-stylesheet" id="ref-for-typedef-stylesheet①">&lt;stylesheet></a>
 }
 </pre>
-   <p><a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-3">@else</a> is interpreted identically to <a class="css" data-link-type="maybe" href="#at-ruledef-when" id="ref-for-at-ruledef-when-4">@when</a>.
+   <p><span class="css">@else</span> is interpreted identically to <span class="css">@when</span>.
 If its <a class="production css" data-link-type="type">&lt;boolean-condition></a> is omitted,
 it’s treated as having a condition that’s always true.</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export="" id="conditional-rule-chain">conditional rule chain</dfn> is a series of consecutive <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a>,
-starting with a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rule</a> other than <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-4">@else</a>,
-followed by zero or more <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-5">@else</a> rules.
-There cannot be anything between the successive <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a> other than whitespace and/or comments;
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export="" id="conditional-rule-chain">conditional rule chain</dfn> is a series of consecutive <a data-link-type="dfn" href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules" id="ref-for-conditional-group-rules②">conditional group rules</a>,
+starting with a <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rule" id="ref-for-conditional-group-rule②">conditional group rule</a> other than <span class="css">@else</span>,
+followed by zero or more <span class="css">@else</span> rules.
+There cannot be anything between the successive <a data-link-type="dfn" href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules" id="ref-for-conditional-group-rules③">conditional group rules</a> other than whitespace and/or comments;
 any other token "breaks" the chain.</p>
-   <p class="issue" id="issue-38595c95"><a class="self-link" href="#issue-38595c95"></a> Should we require that only the last <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-6">@else</a> in a chain can have an omitted condition?
+   <p class="issue" id="issue-38595c95"><a class="self-link" href="#issue-38595c95"></a> Should we require that only the last <span class="css">@else</span> in a chain can have an omitted condition?
 It’s not uncommon for me, when debugging code,
 to short-circuit an if-else chain by setting one of them to "true";
 I presume that would be similarly useful in CSS?
 It’s still pretty easy to see you’ve done something wrong if you omit the condition accidentally.</p>
-   <p>Within a <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-4">conditional rule chain</a>,
-the conditions of each <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rule</a> are evaluated in order.
+   <p>Within a <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain③">conditional rule chain</a>,
+the conditions of each <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rule" id="ref-for-conditional-group-rule③">conditional group rule</a> are evaluated in order.
 If one of them is true,
-the conditions of all <em>following</em> <a data-link-type="dfn" href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a> in the chain must evaluate to false,
+the conditions of all <em>following</em> <a data-link-type="dfn" href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules" id="ref-for-conditional-group-rules④">conditional group rules</a> in the chain must evaluate to false,
 regardless of what they contain.</p>
-   <p>An <a class="css" data-link-type="maybe" href="#at-ruledef-else" id="ref-for-at-ruledef-else-7">@else</a> rule that is not part of a <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-5">conditional rule chain</a> is invalid and must be ignored.</p>
+   <p>An <span class="css">@else</span> rule that is not part of a <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain④">conditional rule chain</a> is invalid and must be ignored.</p>
    <div class="example" id="example-a3ad87c9">
     <a class="self-link" href="#example-a3ad87c9"></a> For example, here’s a (somewhat silly) conditional chain: 
 <pre class="lang-css highlight"><span class="n">@when</span> <span class="nf">media</span><span class="p">(</span>width <span class="nt">>= 400px) and media(pointer: fine) and supports(display: flex) </span><span class="p">{</span>
   <span class="c">/* A */</span>
 <span class="p">}</span> <span class="n">@else</span> <span class="nf">supports</span><span class="p">(</span>caret-color<span class="nt">: pink) or supports(background: double-rainbow()) </span><span class="p">{</span>
   <span class="c">/* B */</span>
-<span class="p">}</span> <span class="n">@else</span> <span class="err">{</span>
+<span class="p">}</span> <span class="n">@else</span> {
   <span class="c">/* C */</span>
-<span class="p">}</span></pre>
+<span class="p">}</span>
+</pre>
     <p>Exactly one of the preceding rules will be chosen,
 	even tho the second rule
 	doesn’t exclude large widths, fine points, or flexbox support,
 	and the last rule
 	doesn’t specify anything at all.</p>
-    <p>To achieve the same result without <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain-6">conditional rule chains</a>,
+    <p>To achieve the same result without <a data-link-type="dfn" href="#conditional-rule-chain" id="ref-for-conditional-rule-chain⑤">conditional rule chains</a>,
 	you’d need to write:</p>
 <pre class="lang-css highlight"><span class="n">@media</span> <span class="p">(</span>width <span class="nt">>= 400px) and (pointer: fine) </span><span class="p">{</span>
   <span class="n">@supports</span> <span class="p">(</span>display: flex) {
@@ -1565,7 +1590,8 @@ regardless of what they contain.</p>
   @supports not ((caret-color: pink) and (background: double-rainbow())) {
     /* C */
   }
-}</pre>
+}
+</pre>
     <p>This is simultaneously impossible to read,
 	requires significant duplication of both conditions and contents,
 	and is <em>very</em> difficult to write correctly
@@ -1587,7 +1613,7 @@ regardless of what they contain.</p>
             except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119">[RFC2119]</a> </p>
    <p> Examples in this specification are introduced with the words “for example”
             or are set apart from the normative text with <code>class="example"</code>, like this: </p>
-   <div class="example" id="example-ae2b6bc0"><a class="self-link" href="#example-ae2b6bc0"></a> This is an example of an informative example. </div>
+   <div class="example" id="example-example"><a class="self-link" href="#example-example"></a> This is an example of an informative example. </div>
    <p> Informative notes begin with the word “Note”
             and are set apart from the normative text with <code>class="note"</code>, like this: </p>
    <p class="note" role="note"> Note, this is an informative note. </p>
@@ -1725,10 +1751,10 @@ regardless of what they contain.</p>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#conditional-rule-chain">conditional rule chain</a><span>, in §3</span>
-   <li><a href="#at-ruledef-else">@else</a><span>, in §3</span>
-   <li><a href="#funcdef-media">media()</a><span>, in §2</span>
-   <li><a href="#funcdef-supports">supports()</a><span>, in §2</span>
-   <li><a href="#at-ruledef-when">@when</a><span>, in §2</span>
+   <li><a href="#else">@else</a><span>, in §3</span>
+   <li><a href="#media">media()</a><span>, in §2</span>
+   <li><a href="#supports">supports()</a><span>, in §2</span>
+   <li><a href="#when">@when</a><span>, in §2</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
@@ -1742,7 +1768,8 @@ regardless of what they contain.</p>
     <ul>
      <li><a href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-media">@media</a>
      <li><a href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-supports">@supports</a>
-     <li><a href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rules">conditional group rules</a>
+     <li><a href="https://drafts.csswg.org/css-conditional-3/#conditional-group-rule">conditional group rule</a>
+     <li><a href="https://www.w3.org/TR/css3-conditional/#conditional-group-rules">conditional group rules</a>
     </ul>
    <li>
     <a data-link-type="biblio">[css-syntax-3]</a> defines the following terms:
@@ -1750,10 +1777,10 @@ regardless of what they contain.</p>
      <li><a href="https://drafts.csswg.org/css-syntax-3/#typedef-stylesheet">&lt;stylesheet></a>
     </ul>
    <li>
-    <a data-link-type="biblio">[css-values]</a> defines the following terms:
+    <a data-link-type="biblio">[css-values-4]</a> defines the following terms:
     <ul>
-     <li><a href="https://drafts.csswg.org/css-values-3/#mult-opt">?</a>
-     <li><a href="https://drafts.csswg.org/css-values-3/#comb-one">|</a>
+     <li><a href="https://drafts.csswg.org/css-values-4/#mult-opt">?</a>
+     <li><a href="https://drafts.csswg.org/css-values-4/#comb-one">|</a>
     </ul>
    <li>
     <a data-link-type="biblio">[mediaqueries-4]</a> defines the following terms:
@@ -1767,15 +1794,13 @@ regardless of what they contain.</p>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-css-cascade-4">[CSS-CASCADE-4]
-   <dd>Elika Etemad; Tab Atkins Jr.. <a href="http://dev.w3.org/csswg/css-cascade/">CSS Cascading and Inheritance Level 4</a>. 14 January 2016. CR. URL: <a href="http://dev.w3.org/csswg/css-cascade/">http://dev.w3.org/csswg/css-cascade/</a>
+   <dd>Elika Etemad; Tab Atkins Jr.. <a href="https://www.w3.org/TR/css-cascade-4/">CSS Cascading and Inheritance Level 4</a>. URL: <a href="https://www.w3.org/TR/css-cascade-4/">https://www.w3.org/TR/css-cascade-4/</a>
    <dt id="biblio-css-conditional-3">[CSS-CONDITIONAL-3]
-   <dd>CSS Conditional Rules Module Level 3 URL: <a href="https://drafts.csswg.org/css-conditional-3/">https://drafts.csswg.org/css-conditional-3/</a>
+   <dd>CSS Conditional Rules Module Level 3 URL: <a href="https://www.w3.org/TR/css3-conditional/">https://www.w3.org/TR/css3-conditional/</a>
    <dt id="biblio-css-syntax-3">[CSS-SYNTAX-3]
-   <dd>Tab Atkins Jr.; Simon Sapin. <a href="http://dev.w3.org/csswg/css-syntax/">CSS Syntax Module Level 3</a>. 20 February 2014. CR. URL: <a href="http://dev.w3.org/csswg/css-syntax/">http://dev.w3.org/csswg/css-syntax/</a>
-   <dt id="biblio-css-values">[CSS-VALUES]
-   <dd>Tab Atkins Jr.; Elika Etemad. <a href="http://dev.w3.org/csswg/css-values/">CSS Values and Units Module Level 3</a>. 11 June 2015. CR. URL: <a href="http://dev.w3.org/csswg/css-values/">http://dev.w3.org/csswg/css-values/</a>
+   <dd>Tab Atkins Jr.; Simon Sapin. <a href="https://www.w3.org/TR/css-syntax-3/">CSS Syntax Module Level 3</a>. URL: <a href="https://www.w3.org/TR/css-syntax-3/">https://www.w3.org/TR/css-syntax-3/</a>
    <dt id="biblio-mediaqueries-4">[MEDIAQUERIES-4]
-   <dd>Florian Rivoal; Tab Atkins Jr.. <a href="http://dev.w3.org/csswg/mediaqueries4/">Media Queries Level 4</a>. 26 January 2016. WD. URL: <a href="http://dev.w3.org/csswg/mediaqueries4/">http://dev.w3.org/csswg/mediaqueries4/</a>
+   <dd>Florian Rivoal; Tab Atkins Jr.. <a href="https://www.w3.org/TR/mediaqueries-4/">Media Queries Level 4</a>. URL: <a href="https://www.w3.org/TR/mediaqueries-4/">https://www.w3.org/TR/mediaqueries-4/</a>
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a>
   </dl>
@@ -1784,44 +1809,17 @@ regardless of what they contain.</p>
    <div class="issue"> Define "boolean algebra, with X as leaves" in a generic way in Conditional,
 so all the conditional rules can reference it directly,
 rather than having to redefine boolean algebra on their own.<a href="#issue-84e8178b"> ↵ </a></div>
-   <div class="issue"> Should we require that only the last <a class="css" data-link-type="maybe" href="#at-ruledef-else">@else</a> in a chain can have an omitted condition?
+   <div class="issue"> Should we require that only the last <span class="css">@else</span> in a chain can have an omitted condition?
 It’s not uncommon for me, when debugging code,
 to short-circuit an if-else chain by setting one of them to "true";
 I presume that would be similarly useful in CSS?
 It’s still pretty easy to see you’ve done something wrong if you omit the condition accidentally.<a href="#issue-38595c95"> ↵ </a></div>
   </div>
-  <aside class="dfn-panel" data-for="at-ruledef-when">
-   <b><a href="#at-ruledef-when">#at-ruledef-when</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-at-ruledef-when-1">1. Introduction</a> <a href="#ref-for-at-ruledef-when-2">(2)</a>
-    <li><a href="#ref-for-at-ruledef-when-3">2. Generalized Conditional Rules: the @when rule</a>
-    <li><a href="#ref-for-at-ruledef-when-4">3. Chained Conditionals: the @else rule</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="funcdef-media">
-   <b><a href="#funcdef-media">#funcdef-media</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-funcdef-media-1">2. Generalized Conditional Rules: the @when rule</a> <a href="#ref-for-funcdef-media-2">(2)</a> <a href="#ref-for-funcdef-media-3">(3)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="funcdef-supports">
-   <b><a href="#funcdef-supports">#funcdef-supports</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-funcdef-supports-1">2. Generalized Conditional Rules: the @when rule</a> <a href="#ref-for-funcdef-supports-2">(2)</a> <a href="#ref-for-funcdef-supports-3">(3)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="at-ruledef-else">
-   <b><a href="#at-ruledef-else">#at-ruledef-else</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-at-ruledef-else-1">1. Introduction</a>
-    <li><a href="#ref-for-at-ruledef-else-2">3. Chained Conditionals: the @else rule</a> <a href="#ref-for-at-ruledef-else-3">(2)</a> <a href="#ref-for-at-ruledef-else-4">(3)</a> <a href="#ref-for-at-ruledef-else-5">(4)</a> <a href="#ref-for-at-ruledef-else-6">(5)</a> <a href="#ref-for-at-ruledef-else-7">(6)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="conditional-rule-chain">
    <b><a href="#conditional-rule-chain">#conditional-rule-chain</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-conditional-rule-chain-1">1. Introduction</a> <a href="#ref-for-conditional-rule-chain-2">(2)</a>
-    <li><a href="#ref-for-conditional-rule-chain-3">3. Chained Conditionals: the @else rule</a> <a href="#ref-for-conditional-rule-chain-4">(2)</a> <a href="#ref-for-conditional-rule-chain-5">(3)</a> <a href="#ref-for-conditional-rule-chain-6">(4)</a>
+    <li><a href="#ref-for-conditional-rule-chain">1. Introduction</a> <a href="#ref-for-conditional-rule-chain①">(2)</a>
+    <li><a href="#ref-for-conditional-rule-chain②">3. Chained Conditionals: the @else rule</a> <a href="#ref-for-conditional-rule-chain③">(2)</a> <a href="#ref-for-conditional-rule-chain④">(3)</a> <a href="#ref-for-conditional-rule-chain⑤">(4)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */

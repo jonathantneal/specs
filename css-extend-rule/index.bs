@@ -5,9 +5,9 @@ Abstract: This module defines the ''@extend'' rule, which allows elements to act
 	when some new type of element should act like an existing element,
 	but with tweaks.
 Editor: Tab Atkins, Google, http://xanthir.com
-ED: tabatkins.github.io/specs/css-extend-rule/
+ED: jonathantneal.github.io/specs/css-extend-rule/
 Status: DREAM
-Shortname: extend-rule
+Shortname: css-extend-rule
 Level: 1
 Ignored Terms: getelementsbytagname()
 </pre>
@@ -19,40 +19,30 @@ spec: selectors-4; type: selector; text: :active
 Introduction {#intro}
 =====================
 
-Sometimes, when designing a page,
-an author might create some styles for a given type of element,
-such as "error" messages.
-Later, they might realize they need to create a "subclass" of the first type,
-such as a "serious error" message,
-which is styled the same way as "error",
-but with a few tweaks to make it more distinctive.
-Currently, CSS does not have a good way to handle this.
+Sometimes, when designing a page, an author might create some styles for a
+given type of element, such as "error" messages. Later, they might realize they
+need to create a "subclass" of the first type, such as a "serious error"
+message, which is styled the same way as "error", but with a few tweaks to make
+it more distinctive. Currently, CSS does not have a good way to handle this.
 
-If the author has control over the HTML,
-they can declare that every element with a class of "serious-error"
-must also have a class of "error".
-This, however, is error-prone--
-it's easy to forget to add the "error" class to an element,
-causing confusing styling issues,
-and any scripting that creates or manipulates error elements
-has to know to maintain the states properly
-(for example, any time they remove the "error" class,
-	they have to remember to check for and remove "serious-error" as well).
+If the author has control over the HTML, they can declare that every element
+with a class of "serious-error" must also have a class of "error". This,
+however, is error-prone-- it's easy to forget to add the "error" class to an
+element, causing confusing styling issues, and any scripting that creates or
+manipulates error elements has to know to maintain the states properly (for
+example, any time they remove the "error" class, they have to remember to check
+for and remove "serious-error" as well).
 
-Alternately, this can be handled in the CSS--
-every time a style rule contains a ''.error'' selector,
-the selector can be duplicated with ''.serious-error'' replacing it.
-This, too, is error-prone:
-it's easy for typos or inattention to cause the duplicated selectors to drift apart,
-and it's easy, when adding new ''.error'' rules,
-to forget to duplicate the selector.
+Alternately, this can be handled in the CSS-- every time a style rule contains
+a ''.error'' selector, the selector can be duplicated with ''.serious-error''
+replacing it. This, too, is error-prone: it's easy for typos or inattention to
+cause the duplicated selectors to drift apart, and it's easy, when adding new
+''.error'' rules, to forget to duplicate the selector.
 
-The ''@extend'' rule, defined in this specification,
-fixes this common issue.
-It allows an author to declare that certain elements,
-such as everything matching ''.serious-error'',
-must <em>act as if</em> they had the necessary features to match another selector,
-such as ''.error''.
+The ''@extend'' rule, defined in this specification, fixes this common issue.
+It allows an author to declare that certain elements, such as everything
+matching ''.serious-error'', must <em>act as if</em> they had the necessary
+features to match another selector, such as ''.error''.
 
 <div class='example'>
 	For example, the following code declares that ''.serious-error'' elements should act as if they were ''.error'' elements as well:
@@ -69,37 +59,36 @@ such as ''.error''.
 	}
 	</pre>
 
-	Now an element like <code>&lt;div class=serious-error></code> will have red text and border,
-	just like elements with <code>class=error</code>,
-	but will also use bold text.
+	Now an element like <code>&lt;div class=serious-error></code> will have red
+	text and border, just like elements with <code>class=error</code>, but will
+	also use bold text.
 </div>
 
-This allows authors to write simple HTML,
-applying either <code>class=error</code> or <code>class=serious-error</code> to elements as appropriate,
-and write simple CSS,
-creating style rules that just mention ''.error'' or ''.serious-error'',
-secure in the knowledge that the former rules will also apply to serious errors.
+This allows authors to write simple HTML, applying either
+<code>class=error</code> or <code>class=serious-error</code> to elements as
+appropriate, and write simple CSS, creating style rules that just mention
+''.error'' or ''.serious-error'', secure in the knowledge that the former rules
+will also apply to serious errors.
 
 The ''@extend'' Rule {#extend-rule}
 ===================================
 
-The <dfn>@extend</dfn> rule declares
-that a matched element must act as if it had the necessary qualities to match another specified selector.
-Its syntax is:
+The <dfn>@extend</dfn> rule declares that a matched element must act as if it
+had the necessary qualities to match another specified selector. Its syntax is:
 
 <pre class='prod'>@extend <<compound-selector>>;</pre>
 
-The ''@extend'' rule is only allowed inside of style rules.
-In any other context, an ''@extend'' rule is invalid.
-An ''@extend'' rule modifies the way that selector matching works
-for the elements matched by the style rule the ''@extend'' selector is inside of,
-known as the <dfn>extended elements</dfn> for that rule.
+The ''@extend'' rule is only allowed inside of style rules. In any other
+context, an ''@extend'' rule is invalid. An ''@extend'' rule modifies the way
+that selector matching works for the elements matched by the style rule the
+''@extend'' selector is inside of, known as the <dfn>extended elements</dfn>
+for that rule.
 
-The argument to ''@extend'' is the <dfn>extension selector</dfn>.
-The rule's <a>extended elements</a> must,
-for the purpose of determining if selectors match them,
-act as if they had the necessary <a>features</a>/state/etc to match the <a>extension selector</a>,
-in addition to their pre-existing <a>features</a>/state/etc.
+The argument to ''@extend'' is the <dfn>extension selector</dfn>. The rule's
+<a>extended elements</a> must, for the purpose of determining if selectors
+match them, act as if they had the necessary <a>features</a>/state/etc to match
+the <a>extension selector</a>, in addition to their pre-existing
+<a>features</a>/state/etc.
 
 <div class='example'>
 	For example, in the following code:
@@ -110,22 +99,19 @@ in addition to their pre-existing <a>features</a>/state/etc.
 	}
 	</pre>
 
-	All elements matching the ''.serious-error'' selector
-	must act as if they also had an "error" class
-	for the purpose of matching selectors,
-	regardless of what their actual set of classes is.
+	All elements matching the ''.serious-error'' selector must act as if they
+	also had an "error" class for the purpose of matching selectors, regardless
+	of what their actual set of classes is.
 </div>
 
-Issue: Should this only affect selectors in CSS,
-or should it affect all APIs using selectors?
-Dunno which is saner for browsers;
-probably all selector-based APIs.
-Do other query APIs, like {{getElementsByTagName()}},
-rely on the same machinery?
-If so, should we generalize this to allow host languages to declare arbitrary querying APIs to be "selector-ish"?
+Issue: Should this only affect selectors in CSS, or should it affect all APIs
+using selectors? Dunno which is saner for browsers; probably all selector-based
+APIs. Do other query APIs, like {{getElementsByTagName()}}, rely on the same
+machinery? If so, should we generalize this to allow host languages to declare
+arbitrary querying APIs to be "selector-ish"?
 
-The ''@extend'' rule only affects the <a>extended elements</a>
-as long as the rule it's inside of matches them.
+The ''@extend'' rule only affects the <a>extended elements</a> as long as the
+rule it's inside of matches them.
 
 <div class='example'>
 	For example, if the rule containing ''@extend'' is in an ''@media'' block:
@@ -147,13 +133,13 @@ as long as the rule it's inside of matches them.
 	}
 	</pre>
 
-	Then the ''.serious-error'' elements only act as if they have an <code>error</code> class
-	when the page's width is greater than ''600px''.
+	Then the ''.serious-error'' elements only act as if they have an
+	<code>error</code> class when the page's width is greater than ''600px''.
 </div>
 
 <div class='example'>
-	Note that the <a>extension selector</a> can specify more than classes.
-	For example, in the following code:
+	Note that the <a>extension selector</a> can specify more than classes. For
+	example, in the following code:
 
 	<pre class='lang-css'>
 	.my-button {
@@ -161,8 +147,9 @@ as long as the rule it's inside of matches them.
 	}
 	</pre>
 
-	Any elements with <code>class=my-button</code> receive the same styling as actual <a element>button</a> elements,
-	as if they had a tagname of <css>button</css> in addition to their normal tagname.
+	Any elements with <code>class=my-button</code> receive the same styling as
+	actual <a element>button</a> elements, as if they had a tagname of
+	<css>button</css> in addition to their normal tagname.
 
 	Similarly, in the following code:
 
@@ -172,15 +159,15 @@ as long as the rule it's inside of matches them.
 	}
 	</pre>
 
-	Any ''.perma-pressed'' elements are styled as if they were '':active'',
-	so that any styling applied to "pressed" buttons via '':active'' rules applies to them as well.
+	Any ''.perma-pressed'' elements are styled as if they were '':active'', so
+	that any styling applied to "pressed" buttons via '':active'' rules applies
+	to them as well.
 </div>
 
 <div class='example'>
-	The ''@extend'' rule effectively adds qualities to an element,
-	so that it matches other rules.
-	The selector used to apply the ''@extend'' rule has no effect on this.
-	For example, in the following code:
+	The ''@extend'' rule effectively adds qualities to an element, so that it
+	matches other rules. The selector used to apply the ''@extend'' rule has no
+	effect on this. For example, in the following code:
 
 	<pre class='lang-css'>
 	.red-text { color: red; }
@@ -190,40 +177,37 @@ as long as the rule it's inside of matches them.
 	div { @extend .blue-text; }
 	</pre>
 
-	A naive author looking at the code and wondering how a <code>&lt;div id=sidebar></code> element would be styled
-	might assume that it gets red text,
-	as an ID selector is used to ''@extend'' the ''.red-text'' class,
-	versus a much less specific tagname selector.
-	However, this is wrong--
-	the element gets blue text,
-	as the ''.red-text'' and ''.blue-text'' rules have equal specificity,
-	and the ''.blue-text'' rule appears later in the stylesheet.
-	The specificity of the rules that caused the element to match ''.red-text'' or ''.blue-text'' are irrelevant here.
+	A naive author looking at the code and wondering how a
+	<code>&lt;div id=sidebar></code> element would be styled might assume that
+	it gets red text, as an ID selector is used to ''@extend'' the
+	''.red-text'' class, versus a much less specific tagname selector. However,
+	this is wrong-- the element gets blue text, as the ''.red-text'' and
+	''.blue-text'' rules have equal specificity, and the ''.blue-text'' rule
+	appears later in the stylesheet. The specificity of the rules that caused
+	the element to match ''.red-text'' or ''.blue-text'' are irrelevant here.
 
-	While this may in some cases be confusing,
-	it can also be a great benefit in some cases.
-	For example,
-	an author can define a lot of styles with simple, one-class (or one <a>placeholder selector</a>) rules,
-	effectively ignoring specificity entirely,
-	then apply them via longer, much more specific selectors,
-	using ''@extend'' to invoke the behavior of the simpler rules.
-	This can allow an author to avoid many of the specificity problems of using IDs in rules, for example.
+	While this may in some cases be confusing, it can also be a great benefit
+	in some cases. For example, an author can define a lot of styles with
+	simple, one-class (or one <a>placeholder selector</a>) rules, effectively
+	ignoring specificity entirely, then apply them via longer, much more
+	specific selectors, using ''@extend'' to invoke the behavior of the simpler
+	rules. This can allow an author to avoid many of the specificity problems
+	of using IDs in rules, for example.
 </div>
 
 ''@extend'' Chaining {#extend-chaining}
 ---------------------------------------
 
-Multiple ''@extend'' rules can be "chained",
-with one rule adding certain qualities to an element,
-which cause another style rule containing an ''@extend'' to match.
+Multiple ''@extend'' rules can be "chained" with one rule adding certain
+qualities to an element, which cause another style rule containing an
+''@extend'' to match.
 
-Note: This falls out of the definition automatically.
-It is called out separately for clarity,
-not because it's a separate feature that needs to be specifically defined.
+Note: This falls out of the definition automatically. It is called out
+separately for clarity, not because it's a separate feature that needs to be
+specifically defined.
 
 <div class='example'>
-	For example,
-	the following code using ''@extend'':
+	For example, the following code using ''@extend'':
 
 	<pre class='lang-css'>
 	.error {
@@ -262,17 +246,16 @@ not because it's a separate feature that needs to be specifically defined.
 The Placeholder Selector ''%foo'' {#placeholder}
 ================================================
 
-The ''@extend'' rule originates in CSS preprocessors, such as SASS.
-Experience with those tools shows that it's often useful to define generic, "functional" sets of styles
-that don't apply to any elements directly,
-then use ''@extend'' to give that behavior to <em>semantic</em> classnames
-which are more meaningful within their project.
+The ''@extend'' rule originates in CSS preprocessors, such as SASS. Experience
+with those tools shows that it's often useful to define generic, "functional"
+sets of styles that don't apply to any elements directly, then use ''@extend''
+to give that behavior to <em>semantic</em> classnames which are more meaningful
+within their project.
 
 <div class='example'>
 	For example, the "media block" is a common functional sort of styling,
-	originating from OOCSS,
-	that describes a box with a picture on one side and text on the other.
-	It might be used like the following:
+	originating from OOCSS, that describes a box with a picture on one side and
+	text on the other. It might be used like the following:
 
 	<pre class='lang-css'>
 	.media-block {
@@ -290,26 +273,25 @@ which are more meaningful within their project.
 	</pre>
 </div>
 
-However, this also carries the possibility of confusion.
-In the above example, ''.media-block'' is just used to give a name to the pattern,
-so that other rules can ''@extend'' it.
-It's not meant to be used in a document--
-there shouldn't be any elements with <code>class=media-block</code>--
-but this isn't obvious from the code.
-It's easy for later maintainers of the file to accidentally use ''.media-block'' directly on an element,
-and modify it for their own uses
-(after all, if they search the codebase, they'll find no elements on the page using it!),
-perhaps accidentally breaking elements using it in ''@extend''.
+However, this also carries the possibility of confusion. In the above example,
+''.media-block'' is just used to give a name to the pattern, so that other
+rules can ''@extend'' it. It's not meant to be used in a document-- there
+shouldn't be any elements with <code>class=media-block</code>-- but this isn't
+obvious from the code. It's easy for later maintainers of the file to
+accidentally use ''.media-block'' directly on an element, and modify it for
+their own uses (after all, if they search the codebase, they'll find no
+elements on the page using it!), perhaps accidentally breaking elements using
+it in ''@extend''.
 
-To avoid situations like this,
-and make it more clear that one is developing a "generic"/"functional"/"structural" set of styles,
-the <dfn>placeholder selector</dfn> can be used.
-Its syntax is similar to a <a>class selector</a>,
-but is prefixed by a ''%'' (U+0025 PERCENT SIGN)
-rather than a period.
+To avoid situations like this, and make it more clear that one is developing a
+"generic"/"functional"/"structural" set of styles, the
+<dfn>placeholder selector</dfn> can be used. Its syntax is similar to a
+<a>class selector</a>, but is prefixed by a ''%'' (U+0025 PERCENT SIGN) rather
+than a period.
 
 <div class='example'>
-	The previous example could be more clearly written using a <a>placeholder selector</a>:
+	The previous example could be more clearly written using a
+	<a>placeholder selector</a>:
 
 	<pre class='lang-css'>
 	%media-block {
@@ -326,16 +308,17 @@ rather than a period.
 	</pre>
 </div>
 
-Host languages must not provide any way for an element to match a <a>placeholder selector</a>;
-the only way for an element to match one is by using an ''@extend'' rule.
-This ensures that no element will ever directly match the styles using one,
-even by accident,
-and it can't be accidentally reused for an element directly.
+Host languages must not provide any way for an element to match a
+<a>placeholder selector</a>; the only way for an element to match one is by
+using an ''@extend'' rule. This ensures that no element will ever directly
+match the styles using one, even by accident, and it can't be accidentally
+reused for an element directly.
 
-<a>Placeholder selectors</a> have the same specificity as <a>class selectors</a>.
+<a>Placeholder selectors</a> have the same specificity as
+<a>class selectors</a>.
 
-Issue: Or should they have slightly less, so concrete classes can reliably override?
-This would mean putting a fourth number into the specificity 3-tuple.
+Issue: Or should they have slightly less, so concrete classes can reliably
+override? This would mean putting a fourth number into the specificity 3-tuple.
 
 Acknowledgements {#acks}
 ========================
