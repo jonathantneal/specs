@@ -1176,8 +1176,8 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version 700cc55f72d4a495f4d413ab0923b47cf4eb389b" name="generator">
-  <link href="jonathantneal.github.io/specs/css-extend-rule/" rel="canonical">
+  <meta content="Bikeshed version 4c445da45a06bfe85692a974caaf9bbca35cc8b7" name="generator">
+  <link href="https://jonathantneal.github.io/specs/css-extend-rule/" rel="canonical">
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1424,21 +1424,22 @@ pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">CSS Extend Rule</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2017-09-16">16 September 2017</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2017-09-18">18 September 2017</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
-     <dd><a class="u-url" href="jonathantneal.github.io/specs/css-extend-rule/">jonathantneal.github.io/specs/css-extend-rule/</a>
+     <dd><a class="u-url" href="https://jonathantneal.github.io/specs/css-extend-rule/">https://jonathantneal.github.io/specs/css-extend-rule/</a>
      <dt>Issue Tracking:
      <dd><a href="#issues-index">Inline In Spec</a>
-     <dt class="editor">Editor:
+     <dt class="editor">Editors:
+     <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="https://twitter.com/jon_neal">Jonathan Neal</a>
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-url url" href="http://xanthir.com">Tab Atkins</a> (<span class="p-org org">Google</span>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 16 September 2017,
+In addition, as of 18 September 2017,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -1462,7 +1463,7 @@ but with tweaks.</p>
      <ol class="toc">
       <li><a href="#extend-chaining"><span class="secno">2.1</span> <span class="content"><span class="css">@extend</span> Chaining</span></a>
      </ol>
-    <li><a href="#placeholder"><span class="secno">3</span> <span class="content">The Placeholder Selector <span class="css">%foo</span></span></a>
+    <li><a href="#functional-selector"><span class="secno">3</span> <span class="content">The Functional Selector <span class="css">%foo</span></span></a>
     <li><a href="#acks"><span class="secno">4</span> <span class="content">Acknowledgements</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
@@ -1547,8 +1548,8 @@ machinery? If so, should we generalize this to allow host languages to declare
 arbitrary querying APIs to be "selector-ish"?</p>
    <p>The <span class="css">@extend</span> rule only affects the <a data-link-type="dfn" href="#extended-elements" id="ref-for-extended-elements①">extended elements</a> as long as the
 rule it’s inside of matches them.</p>
-   <div class="example" id="example-7b73da8e">
-    <a class="self-link" href="#example-7b73da8e"></a> For example, if the rule containing <span class="css">@extend</span> is in an <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-media" id="ref-for-at-ruledef-media">@media</a> block: 
+   <div class="example" id="example-b354fd35">
+    <a class="self-link" href="#example-b354fd35"></a> For example, if the rule containing <span class="css">@extend</span> is in an <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-conditional-3/#at-ruledef-media" id="ref-for-at-ruledef-media">@media</a> block: 
 <pre class="lang-css highlight"><span class="nt">.error </span><span class="p">{</span>
   <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
 <span class="p">}</span>
@@ -1556,6 +1557,7 @@ rule it’s inside of matches them.</p>
 <span class="n">@media</span> <span class="p">(</span>width <span class="nt">> 600px) </span><span class="p">{</span>
   .serious-error {
     @extend .error;
+
     font-weight: bold;
   }
 
@@ -1565,6 +1567,23 @@ rule it’s inside of matches them.</p>
 }
 </pre>
     <p>Then the <span class="css">.serious-error</span> elements only act as if they have an <code>error</code> class when the page’s width is greater than <span class="css">600px</span>.</p>
+<pre class="lang-css highlight"><span class="nt">.error </span><span class="p">{</span>
+  <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">@media</span> <span class="p">(</span>width <span class="nt">> 600px) </span><span class="p">{</span>
+  .serious-error {
+    color: red;
+    width: 100%;
+
+    font-weight: bold;
+  }
+
+  .error {
+    width: 100%;
+  }
+}
+</pre>
    </div>
    <div class="example" id="example-0d4045a3">
     <a class="self-link" href="#example-0d4045a3"></a> Note that the <a data-link-type="dfn" href="#extension-selector" id="ref-for-extension-selector①">extension selector</a> can specify more than classes. For
@@ -1584,70 +1603,51 @@ rule it’s inside of matches them.</p>
 	that any styling applied to "pressed" buttons via <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/selectors-4/#active-pseudo" id="ref-for-active-pseudo①">:active</a> rules applies
 	to them as well.</p>
    </div>
-   <div class="example" id="example-cee44896">
-    <a class="self-link" href="#example-cee44896"></a> The <span class="css">@extend</span> rule effectively adds qualities to an element, so that it
-	matches other rules. The selector used to apply the <span class="css">@extend</span> rule has no
-	effect on this. For example, in the following code: 
-<pre class="lang-css highlight"><span class="nt">.red-text </span><span class="p">{</span> <span class="k">color</span><span class="p">:</span> red<span class="p">;</span> <span class="p">}</span>
-<span class="nt">.blue-text </span><span class="p">{</span> <span class="k">color</span><span class="p">:</span> blue<span class="p">;</span> <span class="p">}</span>
-
-<span class="nt">#sidebar </span><span class="p">{</span> <span class="n">@extend</span> .red-text; }
-div { @extend .blue-text; }
-</pre>
-    <p>A naive author looking at the code and wondering how a <code>&lt;div id=sidebar></code> element would be styled might assume that
-	it gets red text, as an ID selector is used to <span class="css">@extend</span> the <span class="css">.red-text</span> class, versus a much less specific tagname selector. However,
-	this is wrong-- the element gets blue text, as the <span class="css">.red-text</span> and <span class="css">.blue-text</span> rules have equal specificity, and the <span class="css">.blue-text</span> rule
-	appears later in the stylesheet. The specificity of the rules that caused
-	the element to match <span class="css">.red-text</span> or <span class="css">.blue-text</span> are irrelevant here.</p>
-    <p>While this may in some cases be confusing, it can also be a great benefit
-	in some cases. For example, an author can define a lot of styles with
-	simple, one-class (or one <a data-link-type="dfn" href="#placeholder-selector" id="ref-for-placeholder-selector">placeholder selector</a>) rules, effectively
-	ignoring specificity entirely, then apply them via longer, much more
-	specific selectors, using <span class="css">@extend</span> to invoke the behavior of the simpler
-	rules. This can allow an author to avoid many of the specificity problems
-	of using IDs in rules, for example.</p>
-   </div>
    <h3 class="heading settled" data-level="2.1" id="extend-chaining"><span class="secno">2.1. </span><span class="content"><span class="css">@extend</span> Chaining</span><a class="self-link" href="#extend-chaining"></a></h3>
    <p>Multiple <span class="css">@extend</span> rules can be "chained" with one rule adding certain
 qualities to an element, which cause another style rule containing an <span class="css">@extend</span> to match.</p>
-   <p class="note" role="note"><span>Note:</span> This falls out of the definition automatically. It is called out
-separately for clarity, not because it’s a separate feature that needs to be
-specifically defined.</p>
-   <div class="example" id="example-62c01ac1">
-    <a class="self-link" href="#example-62c01ac1"></a> For example, the following code using <span class="css">@extend</span>: 
+   <div class="example" id="example-06a4aa7c">
+    <a class="self-link" href="#example-06a4aa7c"></a> For example, the following code using <span class="css">@extend</span>: 
 <pre class="lang-css highlight"><span class="nt">.error </span><span class="p">{</span>
   <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">.serious-error </span><span class="p">{</span>
   <span class="n">@extend</span> .error;
+
   font-weight: bold;
 }
 
 .super-serious-error {
   @extend .serious-error;
+
   animation: flashing 1s infinite;
 }
 </pre>
     <p>is equivalent to the following code without <span class="css">@extend</span>:</p>
-<pre class="lang-css highlight"><span class="nt">.error, .serious-error, .super-serious-error </span><span class="p">{</span>
+<pre class="lang-css highlight"><span class="nt">.error </span><span class="p">{</span>
   <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
 <span class="p">}</span>
 
-<span class="nt">.serious-error, .super-serious-error </span><span class="p">{</span>
+<span class="nt">.serious-error </span><span class="p">{</span>
+  <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
   <span class="k">font-weight</span><span class="p">:</span> bold<span class="p">;</span>
 <span class="p">}</span>
 
 <span class="nt">.super-serious-error </span><span class="p">{</span>
+  <span class="k">color</span><span class="p">:</span> red<span class="p">;</span>
+  <span class="k">font-weight</span><span class="p">:</span> bold<span class="p">;</span>
   <span class="k">animation</span><span class="p">:</span> flashing <span class="m">1</span><span class="l">s</span> infinite<span class="p">;</span>
 <span class="p">}</span>
 </pre>
    </div>
-   <h2 class="heading settled" data-level="3" id="placeholder"><span class="secno">3. </span><span class="content">The Placeholder Selector <span class="css">%foo</span></span><a class="self-link" href="#placeholder"></a></h2>
-   <p>The <span class="css">@extend</span> rule originates in CSS preprocessors, such as SASS. Experience
-with those tools shows that it’s often useful to define generic, "functional"
-sets of styles that don’t apply to any elements directly, then use <span class="css">@extend</span> to give that behavior to <em>semantic</em> classnames which are more meaningful
-within their project.</p>
+   <h2 class="heading settled" data-level="3" id="functional-selector"><span class="secno">3. </span><span class="content">The Functional Selector <span class="css">%foo</span></span><a class="self-link" href="#functional-selector"></a></h2>
+   <p>A functional selector (e.g. <span class="css">%foo</span>) exists to be replaced via <span class="css">@extend</span>.
+The rule originates in CSS preprocessors, such as SASS. Experience with those
+tools shows that it’s often useful to define generic, "functional" sets of
+styles that don’t apply to any elements directly, then use <span class="css">@extend</span> to give
+that behavior to <em>semantic</em> classnames which are more meaningful within
+their project.</p>
    <div class="example" id="example-46cde2df">
     <a class="self-link" href="#example-46cde2df"></a> For example, the "media block" is a common functional sort of styling,
 	originating from OOCSS, that describes a box with a picture on one side and
@@ -1675,13 +1675,14 @@ their own uses (after all, if they search the codebase, they’ll find no
 elements on the page using it!), perhaps accidentally breaking elements using
 it in <span class="css">@extend</span>.</p>
    <p>To avoid situations like this, and make it more clear that one is developing a
-"generic"/"functional"/"structural" set of styles, the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="placeholder-selector">placeholder selector</dfn> can be used. Its syntax is similar to a <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#class-selector" id="ref-for-class-selector">class selector</a>, but is prefixed by a <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-values-4/#valdef-type-or-value" id="ref-for-valdef-type-or-value">%</a> (U+0025 PERCENT SIGN) rather
+"generic"/"functional"/"structural" set of styles, the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport="" id="functional-selector①">functional selector</dfn> can be used. Its syntax is similar to a <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#class-selector" id="ref-for-class-selector">class selector</a>, but is prefixed by a <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/css-values-4/#valdef-type-or-value" id="ref-for-valdef-type-or-value">%</a> (U+0025 PERCENT SIGN) rather
 than a period.</p>
-   <div class="example" id="example-79ca7eb5">
-    <a class="self-link" href="#example-79ca7eb5"></a> The previous example could be more clearly written using a <a data-link-type="dfn" href="#placeholder-selector" id="ref-for-placeholder-selector①">placeholder selector</a>: 
+   <div class="example" id="example-fea78b6a">
+    <a class="self-link" href="#example-fea78b6a"></a> The previous example could be more clearly written using a <a data-link-type="dfn" href="#functional-selector①" id="ref-for-functional-selector①">functional selector</a>: 
 <pre class="lang-css highlight"><span class="nt">%media-block </span><span class="p">{</span>
   <span class="k">overflow</span><span class="p">:</span> auto<span class="p">;</span>
 <span class="p">}</span>
+
 <span class="nt">%media-block > img </span><span class="p">{</span>
   <span class="k">float</span><span class="p">:</span> left<span class="p">;</span>
 <span class="p">}</span>
@@ -1692,15 +1693,13 @@ than a period.</p>
 }
 </pre>
    </div>
-   <p>Host languages must not provide any way for an element to match a <a data-link-type="dfn" href="#placeholder-selector" id="ref-for-placeholder-selector②">placeholder selector</a>; the only way for an element to match one is by
+   <p>Host languages must not provide any way for an element to match a <a data-link-type="dfn" href="#functional-selector①" id="ref-for-functional-selector①①">functional selector</a>; the only way for an element to match one is by
 using an <span class="css">@extend</span> rule. This ensures that no element will ever directly
 match the styles using one, even by accident, and it can’t be accidentally
 reused for an element directly.</p>
-   <p><a data-link-type="dfn" href="#placeholder-selector" id="ref-for-placeholder-selector③">Placeholder selectors</a> have the same specificity as <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#class-selector" id="ref-for-class-selector①">class selectors</a>.</p>
-   <p class="issue" id="issue-e31eabef"><a class="self-link" href="#issue-e31eabef"></a> Or should they have slightly less, so concrete classes can reliably
-override? This would mean putting a fourth number into the specificity 3-tuple.</p>
+   <p><a data-link-type="dfn" href="#functional-selector①" id="ref-for-functional-selector①②">Functional selectors</a> have no specificity, the same as <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#universal-selector" id="ref-for-universal-selector">universal selectors</a>.</p>
    <h2 class="heading settled" data-level="4" id="acks"><span class="secno">4. </span><span class="content">Acknowledgements</span><a class="self-link" href="#acks"></a></h2>
-   <p>The editor would like to thank the following people:</p>
+   <p>The editors would like to thank the following people:</p>
    <ul>
     <li data-md="">
      <p><a href="https://twitter.com/stubbornella">Nicole Sullivan</a> for <a href="http://www.stubbornella.org/content/2009/11/09/css-wish-list/">first coming up with the idea for @extend</a>.</p>
@@ -1862,7 +1861,7 @@ override? This would mean putting a fourth number into the specificity 3-tuple.<
    <li><a href="#extend">@extend</a><span>, in §2</span>
    <li><a href="#extended-elements">extended elements</a><span>, in §2</span>
    <li><a href="#extension-selector">extension selector</a><span>, in §2</span>
-   <li><a href="#placeholder-selector">placeholder selector</a><span>, in §3</span>
+   <li><a href="#functional-selector①">functional selector</a><span>, in §3</span>
   </ul>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
@@ -1892,6 +1891,7 @@ override? This would mean putting a fourth number into the specificity 3-tuple.<
      <li><a href="https://drafts.csswg.org/selectors-4/#active-pseudo">:active</a>
      <li><a href="https://drafts.csswg.org/selectors-4/#typedef-compound-selector">&lt;compound-selector></a>
      <li><a href="https://drafts.csswg.org/selectors-4/#class-selector">class selector</a>
+     <li><a href="https://drafts.csswg.org/selectors-4/#universal-selector">universal selector</a>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1918,8 +1918,6 @@ using selectors? Dunno which is saner for browsers; probably all selector-based
 APIs. Do other query APIs, like <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#dom-document-getelementsbytagname">getElementsByTagName()</a></code>, rely on the same
 machinery? If so, should we generalize this to allow host languages to declare
 arbitrary querying APIs to be "selector-ish"?<a href="#issue-dc70c0ef"> ↵ </a></div>
-   <div class="issue"> Or should they have slightly less, so concrete classes can reliably
-override? This would mean putting a fourth number into the specificity 3-tuple.<a href="#issue-e31eabef"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="extended-elements">
    <b><a href="#extended-elements">#extended-elements</a></b><b>Referenced in:</b>
@@ -1933,11 +1931,10 @@ override? This would mean putting a fourth number into the specificity 3-tuple.<
     <li><a href="#ref-for-extension-selector">2. The @extend Rule</a> <a href="#ref-for-extension-selector①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="placeholder-selector">
-   <b><a href="#placeholder-selector">#placeholder-selector</a></b><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="functional-selector①">
+   <b><a href="#functional-selector①">#functional-selector①</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-placeholder-selector">2. The @extend Rule</a>
-    <li><a href="#ref-for-placeholder-selector①">3. The Placeholder Selector %foo</a> <a href="#ref-for-placeholder-selector②">(2)</a> <a href="#ref-for-placeholder-selector③">(3)</a>
+    <li><a href="#ref-for-functional-selector①">3. The Functional Selector %foo</a> <a href="#ref-for-functional-selector①①">(2)</a> <a href="#ref-for-functional-selector①②">(3)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */

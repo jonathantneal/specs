@@ -4,8 +4,9 @@ Abstract: This module defines the ''@extend'' rule, which allows elements to act
 	This makes it easier to "subclass" styling in a page,
 	when some new type of element should act like an existing element,
 	but with tweaks.
+Editor: Jonathan Neal, https://twitter.com/jon_neal
 Editor: Tab Atkins, Google, http://xanthir.com
-ED: jonathantneal.github.io/specs/css-extend-rule/
+ED: https://jonathantneal.github.io/specs/css-extend-rule/
 Status: DREAM
 Shortname: css-extend-rule
 Level: 1
@@ -124,6 +125,7 @@ rule it's inside of matches them.
 	@media (width > 600px) {
 		.serious-error {
 			@extend .error;
+
 			font-weight: bold;
 		}
 
@@ -135,6 +137,25 @@ rule it's inside of matches them.
 
 	Then the ''.serious-error'' elements only act as if they have an
 	<code>error</code> class when the page's width is greater than ''600px''.
+
+	<pre class='lang-css'>
+	.error {
+		color: red;
+	}
+
+	@media (width > 600px) {
+		.serious-error {
+			color: red;
+			width: 100%;
+
+			font-weight: bold;
+		}
+
+		.error {
+			width: 100%;
+		}
+	}
+	</pre>
 </div>
 
 <div class='example'>
@@ -164,47 +185,12 @@ rule it's inside of matches them.
 	to them as well.
 </div>
 
-<div class='example'>
-	The ''@extend'' rule effectively adds qualities to an element, so that it
-	matches other rules. The selector used to apply the ''@extend'' rule has no
-	effect on this. For example, in the following code:
-
-	<pre class='lang-css'>
-	.red-text { color: red; }
-	.blue-text { color: blue; }
-
-	#sidebar { @extend .red-text; }
-	div { @extend .blue-text; }
-	</pre>
-
-	A naive author looking at the code and wondering how a
-	<code>&lt;div id=sidebar></code> element would be styled might assume that
-	it gets red text, as an ID selector is used to ''@extend'' the
-	''.red-text'' class, versus a much less specific tagname selector. However,
-	this is wrong-- the element gets blue text, as the ''.red-text'' and
-	''.blue-text'' rules have equal specificity, and the ''.blue-text'' rule
-	appears later in the stylesheet. The specificity of the rules that caused
-	the element to match ''.red-text'' or ''.blue-text'' are irrelevant here.
-
-	While this may in some cases be confusing, it can also be a great benefit
-	in some cases. For example, an author can define a lot of styles with
-	simple, one-class (or one <a>placeholder selector</a>) rules, effectively
-	ignoring specificity entirely, then apply them via longer, much more
-	specific selectors, using ''@extend'' to invoke the behavior of the simpler
-	rules. This can allow an author to avoid many of the specificity problems
-	of using IDs in rules, for example.
-</div>
-
 ''@extend'' Chaining {#extend-chaining}
 ---------------------------------------
 
 Multiple ''@extend'' rules can be "chained" with one rule adding certain
 qualities to an element, which cause another style rule containing an
 ''@extend'' to match.
-
-Note: This falls out of the definition automatically. It is called out
-separately for clarity, not because it's a separate feature that needs to be
-specifically defined.
 
 <div class='example'>
 	For example, the following code using ''@extend'':
@@ -216,11 +202,13 @@ specifically defined.
 
 	.serious-error {
 		@extend .error;
+
 		font-weight: bold;
 	}
 
 	.super-serious-error {
 		@extend .serious-error;
+
 		animation: flashing 1s infinite;
 	}
 	</pre>
@@ -228,29 +216,33 @@ specifically defined.
 	is equivalent to the following code without ''@extend'':
 
 	<pre class='lang-css'>
-	.error, .serious-error, .super-serious-error {
+	.error {
 		color: red;
 	}
 
-	.serious-error, .super-serious-error {
+	.serious-error {
+		color: red;
 		font-weight: bold;
 	}
 
 	.super-serious-error {
+		color: red;
+		font-weight: bold;
 		animation: flashing 1s infinite;
 	}
 	</pre>
 </div>
 
 
-The Placeholder Selector ''%foo'' {#placeholder}
-================================================
+The Functional Selector ''%foo'' {#functional-selector}
+=======================================================
 
-The ''@extend'' rule originates in CSS preprocessors, such as SASS. Experience
-with those tools shows that it's often useful to define generic, "functional"
-sets of styles that don't apply to any elements directly, then use ''@extend''
-to give that behavior to <em>semantic</em> classnames which are more meaningful
-within their project.
+A functional selector (e.g. ''%foo'') exists to be replaced via ''@extend''.
+The rule originates in CSS preprocessors, such as SASS. Experience with those
+tools shows that it's often useful to define generic, "functional" sets of
+styles that don't apply to any elements directly, then use ''@extend'' to give
+that behavior to <em>semantic</em> classnames which are more meaningful within
+their project.
 
 <div class='example'>
 	For example, the "media block" is a common functional sort of styling,
@@ -285,18 +277,19 @@ it in ''@extend''.
 
 To avoid situations like this, and make it more clear that one is developing a
 "generic"/"functional"/"structural" set of styles, the
-<dfn>placeholder selector</dfn> can be used. Its syntax is similar to a
+<dfn>functional selector</dfn> can be used. Its syntax is similar to a
 <a>class selector</a>, but is prefixed by a ''%'' (U+0025 PERCENT SIGN) rather
 than a period.
 
 <div class='example'>
 	The previous example could be more clearly written using a
-	<a>placeholder selector</a>:
+	<a>functional selector</a>:
 
 	<pre class='lang-css'>
 	%media-block {
 		overflow: auto;
 	}
+
 	%media-block > img {
 		float: left;
 	}
@@ -309,23 +302,19 @@ than a period.
 </div>
 
 Host languages must not provide any way for an element to match a
-<a>placeholder selector</a>; the only way for an element to match one is by
+<a>functional selector</a>; the only way for an element to match one is by
 using an ''@extend'' rule. This ensures that no element will ever directly
 match the styles using one, even by accident, and it can't be accidentally
 reused for an element directly.
 
-<a>Placeholder selectors</a> have the same specificity as
-<a>class selectors</a>.
-
-Issue: Or should they have slightly less, so concrete classes can reliably
-override? This would mean putting a fourth number into the specificity 3-tuple.
+<a>Functional selectors</a> have no specificity, the same as
+<a>universal selectors</a>.
 
 Acknowledgements {#acks}
 ========================
 
-The editor would like to thank the following people:
+The editors would like to thank the following people:
 
-* <a href="https://twitter.com/stubbornella">Nicole Sullivan</a> for <a href="http://www.stubbornella.org/content/2009/11/09/css-wish-list/">first coming up with the idea for @extend</a>.
-* <a href="https://twitter.com/chriseppstein">Chris Eppstein</a> and <a href="https://twitter.com/nex3">Natalie Weizenbaum</a>
-	for <a href="http://chriseppstein.github.io/blog/2009/10/12/css-class-inheritance/">developing and programming</a> the modern incarnation of ''@extend'' in Sass.
-* The Sass community, for using ''@extend'' so extensively that its lack in CSS couldn't be ignored.
+- <a href="https://twitter.com/stubbornella">Nicole Sullivan</a> for <a href="http://www.stubbornella.org/content/2009/11/09/css-wish-list/">first coming up with the idea for @extend</a>.
+- <a href="https://twitter.com/chriseppstein">Chris Eppstein</a> and <a href="https://twitter.com/nex3">Natalie Weizenbaum</a> for <a href="http://chriseppstein.github.io/blog/2009/10/12/css-class-inheritance/">developing and programming</a> the modern incarnation of ''@extend'' in Sass.
+- The Sass community, for using ''@extend'' so extensively that its lack in CSS couldn't be ignored.
